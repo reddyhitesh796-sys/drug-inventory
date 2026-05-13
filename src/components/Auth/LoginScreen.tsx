@@ -35,7 +35,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const { switchUser } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { showToast } = useToast();
-  const [step, setStep] = useState<'welcome' | 'select' | 'login'>('login');
+  const [step, setStep] = useState<'welcome' | 'select' | 'login'>('select');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -93,18 +93,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 };
 
   const handleQuickLogin = (user: User) => {
-    if (!user.isActive) {
-      showToast('error', 'Account Disabled', 'This account has been disabled.');
-      return;
-    }
-    setLoading(true);
-    setSelectedUser(user);
-    setTimeout(() => {
-      switchUser(user);
-      showToast('success', `Welcome, ${user.name}!`, `Logged in as ${user.role}`);
-      onLogin();
-    }, 600);
-  };
+  if (!user.isActive) {
+    showToast('error', 'Account Disabled', 'This account has been disabled.');
+    return;
+  }
+
+  setSelectedUser(user);
+  setStep('login');
+};
 
   const features = [
     { icon: <Boxes size={22} />, label: 'Smart Inventory', desc: 'FEFO batch tracking with real-time stock visibility across all warehouses', color: 'from-blue-500 to-cyan-500', stat: '15K+ batches tracked' },
