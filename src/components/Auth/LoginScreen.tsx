@@ -35,7 +35,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const { switchUser } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { showToast } = useToast();
-  const [step, setStep] = useState<'welcome' | 'select' | 'login'>('welcome');
+  const [step, setStep] = useState<'welcome' | 'select' | 'login'>('login');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
