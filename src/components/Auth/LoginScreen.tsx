@@ -55,16 +55,42 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     return () => clearInterval(t);
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedUser) return;
-    setLoading(true);
-    setTimeout(() => {
-      switchUser(selectedUser);
-      showToast('success', `Welcome back, ${selectedUser.name}!`, `Logged in as ${selectedUser.role}`);
+ const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  setLoading(true);
+
+  try {
+    const response = await fetch(
+      "https://drug-inventory-backend-9800.onrender.com/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("token", data.token);
+
+      showToast("success", "Login successful", "Welcome back!");
       onLogin();
-    }, 800);
-  };
+    } else {
+      showToast("error", "Login failed", "Invalid username or password");
+    }
+  } catch (error) {
+    showToast("error", "Server error", "Please try again");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleQuickLogin = (user: User) => {
     if (!user.isActive) {
